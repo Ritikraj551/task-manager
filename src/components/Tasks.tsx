@@ -63,7 +63,7 @@ const Tasks = () => {
       {tasks.map((task: Task) => (
         <li
           key={task.id}
-          className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300"
+          className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-2xl dark:hover:shadow-gray-800 transition-shadow duration-300"
         >
           {editingId === task.id ? (
             <div className="flex flex-col md:flex-row flex-1 gap-3 w-full">
@@ -88,7 +88,6 @@ const Tasks = () => {
             </div>
           ) : (
             <div className="flex flex-col md:flex-row md:items-center justify-between w-full gap-4">
-              {/* Left: checkmark + task info */}
               <div className="flex items-start gap-4 flex-1">
                 <button
                   onClick={() => toggleStatus(task)}
@@ -123,7 +122,6 @@ const Tasks = () => {
                 </div>
               </div>
 
-              {/* Right: status label + buttons */}
               <div className="flex items-center gap-2 mt-2 md:mt-0">
                 <span
                   className={`text-sm font-medium px-2 py-1 rounded-full w-max ${

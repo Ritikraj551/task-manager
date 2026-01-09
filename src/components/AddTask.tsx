@@ -27,7 +27,7 @@ const AddTask = () => {
   return (
     <form
       onSubmit={addTaskHandler}
-      className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md max-w-3xl mx-auto flex flex-col md:flex-row gap-4 items-center transition-colors duration-300"
+      className="bg-white dark:bg-gray-800 p-6 rounded-xl border dark:border-gray-500 shadow-md max-w-3xl mx-auto flex flex-col md:flex-row gap-4 items-center transition-colors duration-300"
     >
       <div className="flex flex-col md:flex-row gap-3 flex-1 w-full">
         <input
