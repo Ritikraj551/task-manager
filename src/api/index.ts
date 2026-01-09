@@ -1,8 +1,8 @@
 import type { Task } from "../features/task/taskSlice";
 
-// fake API
+// Fake API for production
 let tasks: Task[] = [
-  { id: "1", text: "Learn Javascript" },
+  { id: "1", text: "Learn JS" },
   { id: "2", text: "Build project" },
 ];
 
@@ -10,26 +10,25 @@ const fakeApi = {
   login: async (username: string, password: string) => {
     if (username === "test" && password === "test123") {
       return { token: "fake-jwt-token" };
-    } else {
-      throw new Error("Invalid credentials");
     }
+    throw new Error("Invalid credentials");
   },
   fetchTasks: async (): Promise<Task[]> => tasks,
-  createTask: async (task: Task): Promise<Task> => {
+  createTask: async (task: Task) => {
     tasks.push(task);
     return task;
   },
-  updateTask: async (task: Task): Promise<Task> => {
+  updateTask: async (task: Task) => {
     tasks = tasks.map((t) => (t.id === task.id ? task : t));
     return task;
   },
-  deleteTask: async (id: string): Promise<string> => {
+  deleteTask: async (id: string) => {
     tasks = tasks.filter((t) => t.id !== id);
     return id;
   },
 };
 
-// MSW
+// Dev API using MSW
 const devApi = {
   login: async (username: string, password: string) => {
     const res = await fetch("/login", {
@@ -66,5 +65,5 @@ const devApi = {
   },
 };
 
-// ---- Export correct API based on environment ----
+// Use dev API in development, fake API in production
 export const api = import.meta.env.DEV ? devApi : fakeApi;
