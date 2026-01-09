@@ -1,34 +1,34 @@
 import type { Task } from "../features/task/taskSlice";
 
 // Fake API for production
-let tasks: Task[] = [
-  { id: "1", text: "Learn JS" },
-  { id: "2", text: "Build project" },
-];
+let tasks: Task[] = JSON.parse(localStorage.getItem("tasks") || "[]");
 
 const fakeApi = {
-  login: async (username: string, password: string) => {
-    if (username === "test" && password === "test123") {
-      return { token: "fake-jwt-token" };
-    }
-    throw new Error("Invalid credentials");
-  },
-
-  fetchTasks: async (): Promise<Task[]> => tasks,
+  fetchTasks: async () => tasks,
 
   createTask: async (task: Task) => {
     tasks.push(task);
+    localStorage.setItem("tasks", JSON.stringify(tasks));
     return task;
   },
 
   updateTask: async (task: Task) => {
     tasks = tasks.map((t) => (t.id === task.id ? task : t));
+    localStorage.setItem("tasks", JSON.stringify(tasks));
     return task;
   },
 
   deleteTask: async (id: string) => {
     tasks = tasks.filter((t) => t.id !== id);
+    localStorage.setItem("tasks", JSON.stringify(tasks));
     return id;
+  },
+
+  login: async (username: string, password: string) => {
+    if (username === "test" && password === "test123") {
+      return { token: "fake-jwt-token" };
+    }
+    throw new Error("Invalid credentials");
   },
 };
 
