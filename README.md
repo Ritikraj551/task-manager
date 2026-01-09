@@ -6,7 +6,7 @@ A simple **Task Management Application** built using **React + TypeScript** with
 
 ## Live Demo
 
-**Live URL:** _(Add your Vercel / Netlify link here)_
+**Live URL:** https://task-managementmsw.netlify.app/
 
 ---
 
