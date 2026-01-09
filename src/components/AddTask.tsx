@@ -1,15 +1,17 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { addTask } from "../features/task/taskSlice";
+import type { AppDispatch } from "../app/store";
+import { createTask } from "../features/task/taskSlice";
 
 const AddTask = () => {
   const [task, setTask] = useState("");
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const addTaskHandler = (e: React.FormEvent) => {
     e.preventDefault();
     if (task.trim() === "") return;
-    dispatch(addTask({ text: task }));
+
+    dispatch(createTask(task));
     setTask("");
   };
 
@@ -25,7 +27,10 @@ const AddTask = () => {
         value={task}
         onChange={(e) => setTask(e.target.value)}
       />
-      <button className="bg-gray-600 p-2 rounded-3xl px-4 text-emerald-200 font-bold">
+      <button
+        type="submit"
+        className="bg-gray-600 p-2 rounded-3xl px-4 text-emerald-200 font-bold"
+      >
         Add
       </button>
     </form>

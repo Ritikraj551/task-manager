@@ -1,8 +1,8 @@
 import { http, HttpResponse } from "msw";
 
 let tasks = [
-  { id: "1", text: "Learn MSW" },
-  { id: "2", text: "Build internship task" },
+  { id: "1", text: "Learn Javascript" },
+  { id: "2", text: "Build project" },
 ];
 
 export const handlers = [

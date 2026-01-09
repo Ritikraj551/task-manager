@@ -1,22 +1,27 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "../app/store";
 import { fetchTasks, deleteTask, editTask } from "../features/task/taskSlice";
+import type { AppDispatch } from "../app/store";
 
 const Tasks = () => {
   const tasks = useSelector((state: RootState) => state.task.tasks);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editText, setEditText] = useState("");
 
-  const handleEdit = (task: any) => {
+  useEffect(() => {
+    dispatch(fetchTasks());
+  }, [dispatch]);
+
+  const handleEdit = (task: { id: string; text: string }) => {
     setEditingId(task.id);
     setEditText(task.text);
   };
 
   const handleSave = (id: string) => {
-    dispatch(updateTask({ id, text: editText }));
+    dispatch(editTask({ id, text: editText }));
     setEditingId(null);
   };
 
@@ -24,7 +29,7 @@ const Tasks = () => {
     <>
       <h2>Tasks</h2>
       <ul>
-        {tasks.map((task: any) => (
+        {tasks.map((task) => (
           <li key={task.id}>
             {editingId === task.id ? (
               <>
@@ -41,7 +46,7 @@ const Tasks = () => {
               </>
             )}
 
-            <button onClick={() => dispatch(removeTask(task.id))}>X</button>
+            <button onClick={() => dispatch(deleteTask(task.id))}>X</button>
           </li>
         ))}
       </ul>
