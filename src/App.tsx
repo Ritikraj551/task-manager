@@ -1,21 +1,14 @@
-import { Route, Router, Routes } from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
-import ProtectedRoutes from "./components/ProtectedRoutes";
-import Login from "./pages/Login";
+import AddTask from "./components/AddTask";
+import Tasks from "./components/Tasks";
 
 function App() {
+  
   return (
-    <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route
-        path="/"
-        element={
-          <ProtectedRoutes>
-            <Dashboard />
-          </ProtectedRoutes>
-        }
-      />
-    </Routes>
+    <>
+      <h1>Learn about redux tolkit</h1>
+      <AddTask />
+      <Tasks />
+    </>
   );
 }
 
