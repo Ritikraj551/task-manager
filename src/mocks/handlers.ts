@@ -1,6 +1,11 @@
 import { http, HttpResponse } from "msw";
 
-let tasks = [
+type Task = {
+  id: string;
+  text: string;
+}
+
+let tasks:Task[] = [
   { id: "1", text: "Learn Javascript" },
   { id: "2", text: "Build project" },
 ];
@@ -8,7 +13,10 @@ let tasks = [
 export const handlers = [
   //Logging in
   http.post("/login", async ({ request }) => {
-    const { username, password } = await request.json();
+    const { username, password } = await request.json() as {
+      username: string;
+      password: string;
+    };
 
     if (username === "test" && password === "test123") {
       return HttpResponse.json({
@@ -26,14 +34,14 @@ export const handlers = [
 
   //creating task
   http.post("/tasks", async ({ request }) => {
-    const newTask = await request.json();
+    const newTask = (await request.json()) as Task;
     tasks.push(newTask);
     return HttpResponse.json(newTask, { status: 201 });
   }),
 
   //editing task
   http.put("/tasks/:id", async ({ request, params }) => {
-    const updatedTask = await request.json();
+    const updatedTask = (await request.json()) as Task;
     tasks = tasks.map((task) => (task.id === params.id ? updatedTask : task));
     return HttpResponse.json(updatedTask);
   }),
