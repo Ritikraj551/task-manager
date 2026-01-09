@@ -1,44 +1,94 @@
-import { createSlice, nanoid } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, nanoid } from "@reduxjs/toolkit";
 
-interface Task {
+export interface Task {
   id: string;
   text: string;
 }
 
 interface TaskState {
   tasks: Task[];
+  loading: boolean;
 }
 
 const initialState: TaskState = {
-  tasks: [{ id: "1", text: "Hello World" }],
+  tasks: [],
+  loading: false,
 };
 
-export const taskSlice = createSlice({
+export const fetchTasks = createAsyncThunk<Task[]>(
+  "task/fetchTasks",
+  async () => {
+    const res = await fetch("/tasks");
+    return res.json();
+  }
+);
+
+export const createTask = createAsyncThunk<Task, string>(
+  "task/createTask",
+  async (text) => {
+    const newTask = { id: nanoid(), text };
+
+    await fetch("/tasks", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newTask),
+    });
+
+    return newTask;
+  }
+);
+
+export const deleteTask = createAsyncThunk<string, string>(
+  "task/deleteTask",
+  async (id) => {
+    await fetch(`/tasks/${id}`, { method: "DELETE" });
+    return id;
+  }
+);
+
+export const editTask = createAsyncThunk<Task, { id: string; text: string }>(
+  "task/editTask",
+  async ({ id, text }) => {
+    const updatedTask = { id, text };
+
+    await fetch(`/tasks/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedTask),
+    });
+
+    return updatedTask;
+  }
+);
+
+const taskSlice = createSlice({
   name: "task",
   initialState,
-  reducers: {
-    addTask: (state, action) => {
-      const task: Task = {
-        id: nanoid(),
-        text: action.payload.text,
-      };
-      state.tasks.push(task);
-    },
-
-    removeTask: (state, action) => {
-      state.tasks = state.tasks.filter((task) => task.id !== action.payload);
-    },
-
-    updateTask: (state, action) => {
-      const { id, text } = action.payload;
-      const task = state.tasks.find((task) => task.id === id);
-      if (task) {
-        task.text = text;
-      }
-    },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchTasks.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchTasks.fulfilled, (state, action) => {
+        state.tasks = action.payload;
+        state.loading = false;
+      })
+      .addCase(createTask.fulfilled, (state, action) => {
+        state.tasks.push(action.payload);
+      })
+      .addCase(deleteTask.fulfilled, (state, action) => {
+        state.tasks = state.tasks.filter((task) => task.id !== action.payload);
+      })
+      .addCase(editTask.fulfilled, (state, action) => {
+        const index = state.tasks.findIndex(
+          (task) => task.id === action.payload.id
+        );
+        if (index !== -1) {
+          state.tasks[index] = action.payload;
+        }
+      });
   },
 });
-
-export const { addTask, removeTask, updateTask } = taskSlice.actions;
 
 export default taskSlice.reducer;

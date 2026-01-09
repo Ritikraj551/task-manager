@@ -7,10 +7,19 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
 
-  const handleLogin = () => {
-    if (username === "test" && password === "test123") {
-      dispatch(loginSuccess("fake-jwt-token"));
-    } else {
+  const handleLogin = async () => {
+    try {
+      const res = await fetch("/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (!res.ok) throw new Error("Login failed");
+
+      const data = await res.json();
+      dispatch(loginSuccess(data.token));
+    } catch {
       alert("Invalid credentials");
     }
   };

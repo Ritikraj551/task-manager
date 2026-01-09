@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { removeTask, updateTask } from "../features/task/taskSlice";
 import type { RootState } from "../app/store";
+import { fetchTasks, deleteTask, editTask } from "../features/task/taskSlice";
 
 const Tasks = () => {
   const tasks = useSelector((state: RootState) => state.task.tasks);
