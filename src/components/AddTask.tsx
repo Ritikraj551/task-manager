@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addTask } from "../features/task/taskSlice";
 
@@ -6,9 +6,10 @@ const AddTask = () => {
   const [task, setTask] = useState("");
   const dispatch = useDispatch();
 
-  const addTaskHandler = (e) => {
+  const addTaskHandler = (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(addTask(input));
+    if (task.trim() === "") return;
+    dispatch(addTask({ text: task }));
     setTask("");
   };
 
@@ -20,8 +21,6 @@ const AddTask = () => {
       <input
         type="text"
         className="bg-white rounded-2xl p-2 w-full text-xl font-bold"
-        name=""
-        id=""
         placeholder="Enter Task"
         value={task}
         onChange={(e) => setTask(e.target.value)}

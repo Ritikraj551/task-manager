@@ -1,14 +1,21 @@
-import AddTask from "./components/AddTask";
+import { useSelector } from "react-redux";
+import type { RootState } from "./app/store";
+import Login from "./components/Login";
 import Tasks from "./components/Tasks";
+import AddTask from "./components/AddTask";
+import Logout from "./components/Logout";
 
 function App() {
-  
-  return (
+  const isAuth = useSelector((state: RootState) => state.auth.isAuthenticated);
+
+  return isAuth ? (
     <>
-      <h1>Learn about redux tolkit</h1>
+      <Logout />
       <AddTask />
       <Tasks />
     </>
+  ) : (
+    <Login />
   );
 }
 
