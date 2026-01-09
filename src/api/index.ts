@@ -74,4 +74,4 @@ const devApi = {
 };
 
 // Export API based on environment
-export const api = import.meta.env.DEV ? devApi : fakeApi;
+export const api = import.meta.env.PROD ? fakeApi : devApi;
