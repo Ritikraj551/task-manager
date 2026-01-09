@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import type { RootState } from "../app/store";
-import { fetchTasks, deleteTask, editTask } from "../features/task/taskSlice";
-import type { AppDispatch } from "../app/store";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState, AppDispatch } from "../app/store";
+import { fetchTasks, editTask, deleteTask } from "../features/task/taskSlice";
 
 const Tasks = () => {
   const tasks = useSelector((state: RootState) => state.task.tasks);
@@ -26,31 +25,43 @@ const Tasks = () => {
   };
 
   return (
-    <>
-      <h2>Tasks</h2>
-      <ul>
-        {tasks.map((task) => (
-          <li key={task.id}>
-            {editingId === task.id ? (
-              <>
-                <input
-                  value={editText}
-                  onChange={(e) => setEditText(e.target.value)}
-                />
-                <button onClick={() => handleSave(task.id)}>Save</button>
-              </>
-            ) : (
-              <>
-                {task.text}
-                <button onClick={() => handleEdit(task)}>Edit</button>
-              </>
-            )}
-
-            <button onClick={() => dispatch(deleteTask(task.id))}>X</button>
-          </li>
-        ))}
-      </ul>
-    </>
+    <ul className="space-y-2">
+      {tasks.map((task) => (
+        <li key={task.id} className="flex gap-2 items-center">
+          {editingId === task.id ? (
+            <>
+              <input
+                className="border p-1 rounded w-48"
+                value={editText}
+                onChange={(e) => setEditText(e.target.value)}
+              />
+              <button
+                onClick={() => handleSave(task.id)}
+                className="bg-blue-600 text-white px-2 py-1 rounded"
+              >
+                Save
+              </button>
+            </>
+          ) : (
+            <>
+              <span className="flex-1">{task.text}</span>
+              <button
+                onClick={() => handleEdit(task)}
+                className="bg-yellow-400 px-2 py-1 rounded"
+              >
+                Edit
+              </button>
+            </>
+          )}
+          <button
+            onClick={() => dispatch(deleteTask(task.id))}
+            className="bg-red-600 text-white px-2 py-1 rounded"
+          >
+            X
+          </button>
+        </li>
+      ))}
+    </ul>
   );
 };
 
