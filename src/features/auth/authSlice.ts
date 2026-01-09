@@ -6,7 +6,7 @@ export const login = createAsyncThunk(
   "auth/login",
   async ({ username, password }: { username: string; password: string }) => {
     const res = await api.login(username, password);
-    return res.token; // returns fake JWT
+    return res.token;
   }
 );
 
@@ -17,9 +17,11 @@ interface AuthState {
   error: string | null;
 }
 
+const tokenFromStorage = localStorage.getItem("token");
+
 const initialState: AuthState = {
-  isAuthenticated: false,
-  token: null,
+  isAuthenticated: Boolean(tokenFromStorage),
+  token: tokenFromStorage,
   loading: false,
   error: null,
 };

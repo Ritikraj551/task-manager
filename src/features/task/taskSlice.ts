@@ -1,9 +1,11 @@
-import { createSlice, createAsyncThunk, nanoid } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { api } from "../../api";
 
 export interface Task {
   id: string;
-  text: string;
+  title: string;
+  description: string;
+  status: "pending" | "completed";
 }
 
 interface TaskState {
@@ -18,43 +20,46 @@ const initialState: TaskState = {
   error: null,
 };
 
-// Async thunks
-export const fetchTasks = createAsyncThunk("tasks/fetchTasks", async () => {
+// Fetch tasks
+export const fetchTasks = createAsyncThunk("tasks/fetch", async () => {
   return api.fetchTasks();
 });
 
+// Create task
 export const createTask = createAsyncThunk(
-  "tasks/createTask",
-  async (text: string) => {
-    const task: Task = { id: nanoid(), text };
+  "tasks/create",
+  async (task: Omit<Task, "id">) => {
     return api.createTask(task);
   }
 );
 
-export const editTask = createAsyncThunk(
-  "tasks/editTask",
-  async ({ id, text }: { id: string; text: string }) => {
-    return api.updateTask({ id, text });
+// Update task
+export const updateTask = createAsyncThunk(
+  "tasks/update",
+  async ({ id, updates }: { id: string; updates: Partial<Task> }) => {
+    await api.updateTask(id, updates);
+    return { id, updates };
   }
 );
 
+// Delete task
 export const deleteTask = createAsyncThunk(
-  "tasks/deleteTask",
+  "tasks/delete",
   async (id: string) => {
-    return api.deleteTask(id);
+    await api.deleteTask(id);
+    return id;
   }
 );
 
-// Slice
 const taskSlice = createSlice({
-  name: "task",
+  name: "tasks",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // Fetch
       .addCase(fetchTasks.pending, (state) => {
         state.loading = true;
-        state.error = null;
       })
       .addCase(fetchTasks.fulfilled, (state, action) => {
         state.loading = false;
@@ -62,16 +67,23 @@ const taskSlice = createSlice({
       })
       .addCase(fetchTasks.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || "Failed to fetch tasks";
+        state.error = action.error.message || "Failed to load tasks";
       })
 
+      // Create
       .addCase(createTask.fulfilled, (state, action) => {
         state.tasks.push(action.payload);
       })
-      .addCase(editTask.fulfilled, (state, action) => {
-        const index = state.tasks.findIndex((t) => t.id === action.payload.id);
-        if (index !== -1) state.tasks[index] = action.payload;
+
+      // Update
+      .addCase(updateTask.fulfilled, (state, action) => {
+        const task = state.tasks.find((t) => t.id === action.payload.id);
+        if (task) {
+          Object.assign(task, action.payload.updates);
+        }
       })
+
+      // Delete
       .addCase(deleteTask.fulfilled, (state, action) => {
         state.tasks = state.tasks.filter((t) => t.id !== action.payload);
       });

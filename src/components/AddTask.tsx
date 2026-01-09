@@ -4,14 +4,23 @@ import { createTask } from "../features/task/taskSlice";
 import type { AppDispatch } from "../app/store";
 
 const AddTask = () => {
-  const [task, setTask] = useState("");
+  const [title, setTitle] = useState("");
   const dispatch = useDispatch<AppDispatch>();
 
   const addTaskHandler = (e: React.FormEvent) => {
     e.preventDefault();
-    if (task.trim() === "") return;
-    dispatch(createTask(task));
-    setTask("");
+
+    if (!title.trim()) return;
+
+    dispatch(
+      createTask({
+        title,
+        description: "",
+        status: "pending",
+      })
+    );
+
+    setTitle("");
   };
 
   return (
@@ -21,11 +30,12 @@ const AddTask = () => {
     >
       <input
         type="text"
-        value={task}
-        onChange={(e) => setTask(e.target.value)}
-        placeholder="Enter task"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        placeholder="Enter task title"
         className="border p-2 rounded w-64"
       />
+
       <button
         type="submit"
         className="bg-green-600 text-white px-4 py-2 rounded"

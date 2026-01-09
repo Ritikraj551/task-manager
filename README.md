@@ -12,6 +12,10 @@ A simple **Task Management Application** built using **React + TypeScript** with
 
 ## Features
 
+### Mock API in Production
+
+This project intentionally enables Mock Service Worker in both development and production so the deployed demo works without a real backend, as required for a frontend-only assignment.
+
 ### Authentication (Mocked)
 
 - Login using predefined credentials
