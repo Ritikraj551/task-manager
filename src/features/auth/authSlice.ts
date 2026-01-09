@@ -1,28 +1,42 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { api } from "../../api";
 
-const tokenFromStorage = localStorage.getItem("token");
+interface AuthState {
+  isAuthenticated: boolean;
+  token: string | null;
+}
 
-const initialState = {
-  isAuthenticated: !!tokenFromStorage,
-  token: tokenFromStorage as string | null,
+const initialState: AuthState = {
+  isAuthenticated: !!localStorage.getItem("token"),
+  token: localStorage.getItem("token") || null,
 };
 
-const authSlice = createSlice({
+export const login = createAsyncThunk(
+  "auth/login",
+  async ({ username, password }: { username: string; password: string }) => {
+    const res = await api.login(username, password);
+    return res.token;
+  }
+);
+
+export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    loginSuccess: (state, action) => {
-      state.isAuthenticated = true;
-      state.token = action.payload;
-      localStorage.setItem("token", action.payload);
-    },
     logout: (state) => {
       state.isAuthenticated = false;
       state.token = null;
       localStorage.removeItem("token");
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(login.fulfilled, (state, action) => {
+      state.isAuthenticated = true;
+      state.token = action.payload;
+      localStorage.setItem("token", action.payload);
+    });
+  },
 });
 
-export const { loginSuccess, logout } = authSlice.actions;
+export const { logout } = authSlice.actions;
 export default authSlice.reducer;
