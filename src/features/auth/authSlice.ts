@@ -1,25 +1,30 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { api } from "../../api";
 
-interface AuthState {
-  isAuthenticated: boolean;
-  token: string | null;
-}
-
-const initialState: AuthState = {
-  isAuthenticated: !!localStorage.getItem("token"),
-  token: localStorage.getItem("token") || null,
-};
-
+// Async thunk for login
 export const login = createAsyncThunk(
   "auth/login",
   async ({ username, password }: { username: string; password: string }) => {
     const res = await api.login(username, password);
-    return res.token;
+    return res.token; // returns fake JWT
   }
 );
 
-export const authSlice = createSlice({
+interface AuthState {
+  isAuthenticated: boolean;
+  token: string | null;
+  loading: boolean;
+  error: string | null;
+}
+
+const initialState: AuthState = {
+  isAuthenticated: false,
+  token: null,
+  loading: false,
+  error: null,
+};
+
+const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
@@ -30,11 +35,21 @@ export const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(login.fulfilled, (state, action) => {
-      state.isAuthenticated = true;
-      state.token = action.payload;
-      localStorage.setItem("token", action.payload);
-    });
+    builder
+      .addCase(login.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(login.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = true;
+        state.token = action.payload;
+        localStorage.setItem("token", action.payload);
+      })
+      .addCase(login.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Login failed";
+      });
   },
 });
 
