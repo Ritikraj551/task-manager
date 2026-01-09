@@ -4,7 +4,14 @@ import type { Task } from "../features/task/taskSlice";
 let tasks: Task[] = JSON.parse(localStorage.getItem("tasks") || "[]");
 
 const fakeApi = {
-  fetchTasks: async () => tasks,
+  login: async (username: string, password: string) => {
+    if (username === "test" && password === "test123") {
+      return { token: "fake-jwt-token" };
+    }
+    throw new Error("Invalid credentials");
+  },
+
+  fetchTasks: async (): Promise<Task[]> => tasks,
 
   createTask: async (task: Task) => {
     tasks.push(task);
@@ -22,13 +29,6 @@ const fakeApi = {
     tasks = tasks.filter((t) => t.id !== id);
     localStorage.setItem("tasks", JSON.stringify(tasks));
     return id;
-  },
-
-  login: async (username: string, password: string) => {
-    if (username === "test" && password === "test123") {
-      return { token: "fake-jwt-token" };
-    }
-    throw new Error("Invalid credentials");
   },
 };
 
