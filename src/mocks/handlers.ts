@@ -6,7 +6,7 @@ let tasks = [
 ];
 
 export const handlers = [
-  // LOGIN
+  //Logging in
   http.post("/login", async ({ request }) => {
     const { username, password } = await request.json();
 
@@ -19,26 +19,26 @@ export const handlers = [
     return new HttpResponse("Invalid credentials", { status: 401 });
   }),
 
-  // GET TASKS
+  //fetching tasks
   http.get("/tasks", () => {
     return HttpResponse.json(tasks);
   }),
 
-  // ADD TASK
+  //creating task
   http.post("/tasks", async ({ request }) => {
     const newTask = await request.json();
     tasks.push(newTask);
     return HttpResponse.json(newTask, { status: 201 });
   }),
 
-  // UPDATE TASK
+  //editing task
   http.put("/tasks/:id", async ({ request, params }) => {
     const updatedTask = await request.json();
     tasks = tasks.map((task) => (task.id === params.id ? updatedTask : task));
     return HttpResponse.json(updatedTask);
   }),
 
-  // DELETE TASK
+  //deleting task
   http.delete("/tasks/:id", ({ params }) => {
     tasks = tasks.filter((task) => task.id !== params.id);
     return new HttpResponse(null, { status: 204 });
