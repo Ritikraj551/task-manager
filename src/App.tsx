@@ -3,16 +3,16 @@ import type { RootState } from "./app/store";
 import Login from "./components/Login";
 import AddTask from "./components/AddTask";
 import Tasks from "./components/Tasks";
-import Logout from "./components/Logout";
+import Header from "./components/Header";
 
 function App() {
   const isAuth = useSelector((state: RootState) => state.auth.isAuthenticated);
 
   return (
-    <div className="p-4">
+    <div className="bg-gray-400 min-h-screen">
       {isAuth ? (
         <>
-          <Logout />
+          <Header/>
           <AddTask />
           <Tasks />
         </>

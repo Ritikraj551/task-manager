@@ -18,7 +18,7 @@ const Login = () => {
   };
 
   return (
-    <div className="flex flex-col items-center gap-4 mt-10">
+    <div className="flex flex-col border-2 border-black items-center gap-4 mt-40 mx-auto">
       <h2 className="text-2xl font-bold">Login</h2>
       <input
         placeholder="username"
