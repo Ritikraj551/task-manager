@@ -1,73 +1,141 @@
-# React + TypeScript + Vite
+# Task Management Application (Frontend Only)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A simple **Task Management Application** built using **React + TypeScript** with a fully mocked backend using **Mock Service Worker (MSW)**. The app simulates authentication and task CRUD operations without a real backend, fulfilling common frontend internship requirements.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Live Demo
 
-## React Compiler
+**Live URL:** _(Add your Vercel / Netlify link here)_
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Authentication (Mocked)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Login using predefined credentials
+- Fake JWT token generation
+- Authentication state persisted using `localStorage`
+- Protected dashboard (tasks visible only after login)
+- Logout functionality
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+**Test Credentials**
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+username: test
+password: test123
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Task Management
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- Fetch tasks from mocked API
+- Add new task
+- Edit existing task
+- Delete task
+- Tasks persist across page reloads
+
+---
+
+## Tech Stack
+
+## React (Vite), TypeScript, Redux Toolkit, Tailwind CSS, Mock Service Worker (MSW), Netlify
+
+## Architecture Overview
+
+This project follows a **feature-based folder structure**:
+
 ```
+src/
+├── app/
+│   └── store.ts
+├── features/
+│   ├── auth/
+│   │   └── authSlice.ts
+│   └── task/
+│       └── taskSlice.ts
+├── components/
+│   ├── AddTask.tsx
+│   ├── Tasks.tsx
+│   ├── Login.tsx
+│   └── Logout.tsx
+├── App.tsx
+└── main.tsx
+```
+
+---
+
+## Data Flow
+
+```
+UI Component
+ → dispatch
+   → fetch()
+     → MSW (mock API)
+       → response
+         → Redux
+           → UI update
+```
+
+---
+
+## Mock API (MSW)
+
+The backend is fully mocked using **Mock Service Worker**.
+
+### Mocked Endpoints
+
+->| POST | /login | Simulates user login |
+
+->| GET | /tasks | Fetch all tasks |
+
+->| POST | /tasks | Create a new task |
+
+->| PUT | /tasks/:id | Update a task |
+
+->| DELETE | /tasks/:id | Delete a task |
+
+MSW intercepts network requests in the browser and returns predefined responses, allowing realistic API simulation without a backend server.
+
+---
+
+## Persistence
+
+- Authentication token is stored in `localStorage`
+- Tasks persist across page reloads using mocked API state
+
+---
+
+## Running Locally
+
+1. Clone the repository
+
+```bash
+git clone <your-repo-url>
+```
+
+2. Install dependencies
+
+```bash
+npm install
+```
+
+3. Start the development server
+
+```bash
+npm run dev
+```
+
+4. Open in browser
+
+```
+http://localhost:5173
+```
+
+---
+
+## License
+
+This project is open for educational use.
